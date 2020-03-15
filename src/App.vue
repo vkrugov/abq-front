@@ -1,18 +1,23 @@
 <template>
   <div id="app">
     <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <button @click="getUsers">get users</button>
+
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
 
 export default {
   name: 'App',
-  components: {
-    HelloWorld
+  methods: {
+    getUsers() {
+      this.$http.get('http://abq.loc/users').then((response) => {
+        console.log(response.data)
+      })
+    }
   }
+
 }
 </script>
 
