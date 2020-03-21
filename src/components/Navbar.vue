@@ -9,6 +9,7 @@
                 <b-navbar-nav>
                     <router-link class="nav-link" to="/"> Home </router-link>
                     <router-link class="nav-link" to="/products"> Products </router-link>
+                    <router-link class="nav-link" to="/cart"> Cart </router-link>
                 </b-navbar-nav>
 
                 <!-- Right aligned nav items -->

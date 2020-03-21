@@ -6,6 +6,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
     state: {
         products: [],
-        user: {name: 'Ivan'}
+        user: {name: 'Ivan', id: 3, token: '123'},
+        cart: []
     }
 })
