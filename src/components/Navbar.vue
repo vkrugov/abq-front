@@ -14,14 +14,14 @@
 
                 <!-- Right aligned nav items -->
                 <b-navbar-nav class="ml-auto">
-                    <b-nav-item-dropdown v-if="Object.keys(this.$store.state.user).length !== 0" :text="this.$store.state.user.name" right>
+                    <b-nav-item-dropdown  right>
                         <b-dropdown-item> <router-link to="/profile"> Profile </router-link> </b-dropdown-item>
                         <b-dropdown-item> <router-link to="/order-history"> Order History </router-link> </b-dropdown-item>
                         <b-dropdown-item> <router-link to="/logout"> Logout </router-link> </b-dropdown-item>
                     </b-nav-item-dropdown>
-                    <div  v-else class="nav-link">
+                    <div  class="nav-link">
                         <router-link class="nav-link" to="/login"> Login </router-link>
-                        <router-link class="nav-link" to="/sign-up"> Sing Up </router-link>
+                        <router-link class="nav-link" to="/register"> Sing Up </router-link>
                     </div>
                 </b-navbar-nav>
             </b-collapse>

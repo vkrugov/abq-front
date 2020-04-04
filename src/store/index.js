@@ -1,12 +1,13 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import auth from "./modules/auth.modules";
+import product from "./modules/product.modules";
 
-Vue.use(Vuex)
+Vue.use(Vuex);
 
 export default new Vuex.Store({
-    state: {
-        products: [],
-        user: {name: 'Ivan', id: 3, token: '123'},
-        cart: []
+    modules: {
+        auth,
+        product
     }
 })

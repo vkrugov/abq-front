@@ -1,8 +1,8 @@
 <template>
     <div class="products">
-        <div v-if="hasProduct">
+        <div v-if="status !== ''">
             <transition name="fade">
-                <div class="row" v-if="this.$store.state.products.length > 0" key='product'>
+                <div class="row" v-if="status === 'success'" key='product'>
                     <div class="col-md-3" v-for="product in products" :key="product">
                         <div class="product-box">
                             <div class="mt-2" :class="(product.img ? 'image' : 'dark-image')">{{ product.img }}</div>
@@ -35,29 +35,28 @@
 </template>
 
 <script>
+    import {mapState} from 'vuex';
     import SkeletonProduct from '../components/SkeletonProduct'
+    import {GET_PRODUCTS} from "../store/actions/product.actions";
     //import api from "../config";
 
     export default {
         name: "Products",
         data() {
             return {
-                hasProduct: true,
-                products: [],
             }
         },
         components: {
             appSkeletonProduct: SkeletonProduct
         },
+        computed: mapState({
+            products: (state) => state.product.products,
+            status: (state) => state.product.status
+        }),
         methods: {
             getProducts() {
-                this.$http.get('http://abq.loc/api/products').then((response) => {
-                    if (Object.keys(response.data).length !== 0) {
-                        this.products = this.$store.state.products = response.data
-                    } else {
-                        this.hasProduct = false
-                    }
-                })
+                 this.$store.dispatch(GET_PRODUCTS);
+                console.log(this.status)
             },
             addToCart(event, productId) {
                 this.$http.post('http://abq.loc/api/cart/add?XDEBUG_SESSION_START=PHPSTORM', {
