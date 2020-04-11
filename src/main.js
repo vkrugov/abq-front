@@ -1,7 +1,4 @@
 import Vue from 'vue'
-import VueAxios from 'vue-axios'
-import axios from 'axios'
-//import api from "./config";
 import toastr from "toastr";
 import store from './store'
 import router from './router'
@@ -13,13 +10,11 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
 Vue.use(toastr)
-Vue.use(VueAxios, axios)
-//Vue.use(api)
 
 Vue.config.productionTip = false
 
 new Vue({
-  render: h => h(App),
   store,
-  router
+  router,
+  render: h => h(App),
 }).$mount('#app')

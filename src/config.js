@@ -12,15 +12,16 @@ const api = axios.create({
 
 api.interceptors.request.use(function (config) {
     const token = localStorage.getItem("token");
-    if (token !== null) {
-        config.params.auth_token = token;
+    if (token) {
+        config.headers['Authorization'] = 'Bearer ' + token;
+        config.headers['Content-Type'] = 'application/json';
     }
     return config;
 }, function (err) {
     return Promise.reject(err)
 });
 
-api.interceptors.response.use(
+/*api.interceptors.response.use(
     function (response) {
         return response;
     },
@@ -32,6 +33,6 @@ api.interceptors.response.use(
         }
         return Promise.reject(e);
     }
-);
+);*/
 
 export default api

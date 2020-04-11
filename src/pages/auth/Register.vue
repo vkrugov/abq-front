@@ -2,42 +2,7 @@
     <div>
         <h1>Create your account in a few seconds</h1>
         <b-form @submit.prevent="signUp" ref="signInForm" data-vv-scope="signInForm">
-            <b-form-group label="First Name" class="text-left">
-                <b-form-input
-                        v-model="user.first_name"
-                        name="first_name"
-                        type="text"
-                        placeholder="First Name"
-                >
-                </b-form-input>
-            </b-form-group>
-            <b-form-group label="Last Name" class="text-left">
-                <b-form-input
-                        v-model="user.last_name"
-                        name="last-name"
-                        type="text"
-                        placeholder="Last Name"
-                >
-                </b-form-input>
-            </b-form-group>
-            <b-form-group label="Email Address" class="text-left">
-                <b-form-input
-                        v-model="user.email"
-                        name="email"
-                        type="text"
-                        placeholder="Email Address"
-                >
-                </b-form-input>
-            </b-form-group>
-            <b-form-group label="Gender" class="text-left">
-                <b-form-input
-                        v-model="user.gender"
-                        name="gender"
-                        type="text"
-                        placeholder="Gender"
-                >
-                </b-form-input>
-            </b-form-group>
+            <profile-form :user="user"></profile-form>
             <b-form-group label="Password" class="text-left">
                 <b-form-input
                         v-model="user.password"
@@ -63,6 +28,7 @@
 
 <script>
     import {REGISTRATION_REQUEST} from "../../store/actions/auth.actions";
+    import ProfileForm from "../forms/ProfileForm";
 
     export default {
         name: "Register",
@@ -72,11 +38,16 @@
                     first_name: '',
                     last_name: '',
                     email: '',
+                    phone: '',
                     gender: '',
+                    birthday_at: '',
                     password: '',
                     password_confirmation: '',
                 }
             }
+        },
+        components: {
+            profileForm: ProfileForm
         },
         methods: {
             signUp() {

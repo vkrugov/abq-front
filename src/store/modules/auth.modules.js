@@ -1,10 +1,12 @@
 class User {
     constructor(data) {
         this.id = data.id || null;
-        this.name = data.name || null;
+        this.first_name = data.first_name || null;
         this.last_name = data.last_name || null;
-        this.gender = data.gender || null;
         this.email = data.email || null;
+        this.phone = data.phone || null;
+        this.gender = data.gender || null;
+        this.created_at = data.birthday_at|| 0;
         this.created_at = data.created_at || 0;
         this.updated_at = data.updated_at || 0;
     }
@@ -15,11 +17,10 @@ import {
     AUTH_ERROR,
     AUTH_SUCCESS,
     AUTH_LOGOUT,
- /*   AUTH_FORGOT,
-    AUTH_NEW,
     USER_LOAD,
     USER_UPDATE,
-    USER_ACTIVATE,
+    /*   AUTH_FORGOT,
+    AUTH_NEW,
     PASSWORD_CHANGE,*/
     REGISTRATION_ERROR,
     REGISTRATION_REQUEST,
@@ -45,9 +46,9 @@ const actions = {
             commit(AUTH_REQUEST);
             api.post('/auth/login', {email: user.email, password: sha256(user.password)})
                 .then(({data}) => {
-                    let usr = new User(data);
+                    let usr = new User(data.user);
                     localStorage.setItem('token', data.token);
-                    commit(AUTH_SUCCESS, usr);
+                    commit(AUTH_SUCCESS, usr, data.token);
                     resolve(usr);
                 })
                 .catch(err => {
@@ -57,18 +58,24 @@ const actions = {
                 })
         });
     },
+    [AUTH_LOGOUT]: ({commit}) => {
+        return new Promise((resolve) => {
+            commit(AUTH_LOGOUT);
+            localStorage.removeItem("token");
+            resolve();
+        })
+    },
     [REGISTRATION_REQUEST]: ({commit}, user) => {
         return new Promise((resolve, reject) => {
             let params = Object.assign({}, user);
             params.password = sha256(user.password);
             params.password_confirmation = sha256(user.password_confirmation);
             commit(REGISTRATION_REQUEST);
-            api.post('/auth/register?XDEBUG_SESSION_START=PHPSTORM', params)
+            api.post('/auth/register', params)
                 .then(({data}) => {
-                    console.log(data);
-                    let usr = new User(data);
-                    localStorage.setItem('token', usr.auth_token);
-                    commit(REGISTRATION_SUCCESS, usr);
+                    let usr = new User(data.user);
+                    localStorage.setItem('token', data.token);
+                    commit(REGISTRATION_SUCCESS, usr, data.token);
                     resolve(usr);
                 })
                 .catch(err => {
@@ -78,16 +85,35 @@ const actions = {
                 })
         });
     },
+    [USER_LOAD]: ({commit}) => {
+        return new Promise((resolve, reject) => {
+            if (state.user instanceof User) {
+                resolve(state.user);
+                return;
+            }
+            commit(USER_LOAD);
+            api.post('/auth/me?XDEBUG_SESSION_START=PHPSTORM')
+                .then(({data}) => {
+                    let usr = new User(data);
+                    commit(USER_UPDATE, usr);
+                    resolve(usr);
+                }).catch(() => {
+                commit(AUTH_LOGOUT);
+                localStorage.removeItem("token");
+                reject();
+            })
+        });
+    },
 };
 
 const mutations = {
     [AUTH_REQUEST]: (state) => {
         state.status = "loading";
     },
-    [AUTH_SUCCESS]: (state, user) => {
+    [AUTH_SUCCESS]: (state, user, token) => {
         state.status = "success";
-        state.token = user.auth_token;
         state.user = user;
+        state.token = token;
     },
     [AUTH_ERROR]: (state) => {
         state.status = "error";
@@ -96,10 +122,20 @@ const mutations = {
         state.token = "";
         state.user = {};
     },
-    [REGISTRATION_SUCCESS]: (state, user) => {
-        state.status = "success";
-        state.token = user.auth_token;
+    [USER_LOAD]: (state) => {
+        state.status = "loading"
+    },
+    [USER_UPDATE]: (state, user) => {
         state.user = user;
+        state.status = "success"
+    },
+    [REGISTRATION_REQUEST]: (state) => {
+        state.status = "loading";
+    },
+    [REGISTRATION_SUCCESS]: (state, user, token) => {
+        state.status = "success";
+        state.user = user;
+        state.token = token;
     },
     [REGISTRATION_ERROR]: (state) => {
         state.status = "error";

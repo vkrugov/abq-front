@@ -37,7 +37,7 @@
 <script>
     import {mapState} from 'vuex';
     import SkeletonProduct from '../components/SkeletonProduct'
-    import {GET_PRODUCTS} from "../store/actions/product.actions";
+    import {ADD_TO_CART, GET_PRODUCTS} from "../store/actions/product.actions";
     //import api from "../config";
 
     export default {
@@ -56,16 +56,9 @@
         methods: {
             getProducts() {
                  this.$store.dispatch(GET_PRODUCTS);
-                console.log(this.status)
             },
-            addToCart(event, productId) {
-                this.$http.post('http://abq.loc/api/cart/add?XDEBUG_SESSION_START=PHPSTORM', {
-                    productId,
-                    userToken: this.$store.state.user.token,
-                    userId: this.$store.state.user.id
-                }).then(() => {
-                    this.$store.state.cart.push(productId);
-                })
+           addToCart(event, productId) {
+               this.$store.dispatch(ADD_TO_CART, productId);
             }
         },
         created() {
