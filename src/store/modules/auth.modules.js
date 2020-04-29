@@ -5,12 +5,15 @@ class User {
         this.last_name = data.last_name || null;
         this.email = data.email || null;
         this.phone = data.phone || null;
+        this.role = data.role || null;
         this.gender = data.gender || null;
         this.created_at = data.birthday_at|| 0;
         this.created_at = data.created_at || 0;
         this.updated_at = data.updated_at || 0;
     }
 }
+
+import {CLEAR_CART, CART_LOGIN} from "../actions/product.actions";
 
 import {
     AUTH_REQUEST,
@@ -37,18 +40,19 @@ const state = {
 };
 
 const getters = {
-    isAuthenticated: state => state.token !== '',
+    isAuthenticated:  state => state.token !== '',
 };
 
 const actions = {
     [AUTH_REQUEST]: ({commit}, user) => {
         return new Promise((resolve, reject) => {
             commit(AUTH_REQUEST);
-            api.post('/auth/login', {email: user.email, password: sha256(user.password)})
+            api.post('/auth/login?XDEBUG_SESSION_START=PHPSTORM', {email: user.email, password: sha256(user.password)})
                 .then(({data}) => {
                     let usr = new User(data.user);
                     localStorage.setItem('token', data.token);
                     commit(AUTH_SUCCESS, usr, data.token);
+                    commit(CART_LOGIN,  data.cart ?? []);
                     resolve(usr);
                 })
                 .catch(err => {
@@ -62,6 +66,8 @@ const actions = {
         return new Promise((resolve) => {
             commit(AUTH_LOGOUT);
             localStorage.removeItem("token");
+            localStorage.removeItem("cart");
+            commit(CLEAR_CART);
             resolve();
         })
     },
@@ -70,8 +76,9 @@ const actions = {
             let params = Object.assign({}, user);
             params.password = sha256(user.password);
             params.password_confirmation = sha256(user.password_confirmation);
+            params.cart = JSON.parse(localStorage.getItem('cart'));
             commit(REGISTRATION_REQUEST);
-            api.post('/auth/register', params)
+            api.post('/auth/register?XDEBUG_SESSION_START=PHPSTORM', params)
                 .then(({data}) => {
                     let usr = new User(data.user);
                     localStorage.setItem('token', data.token);
@@ -81,6 +88,7 @@ const actions = {
                 .catch(err => {
                     commit(REGISTRATION_ERROR, err);
                     localStorage.removeItem('token');
+                    localStorage.removeItem("cart");
                     reject(err);
                 })
         });
@@ -136,6 +144,7 @@ const mutations = {
         state.status = "success";
         state.user = user;
         state.token = token;
+        state.cart = localStorage.getItem('cart');
     },
     [REGISTRATION_ERROR]: (state) => {
         state.status = "error";

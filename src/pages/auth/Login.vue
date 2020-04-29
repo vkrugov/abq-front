@@ -1,15 +1,28 @@
 <template>
-    <b-container>
-        <form action="" @submit.prevent="signIn">
-            <label>
-                <input type="text" name="email" v-model="email">
-            </label>
-            <label>
-                <input type="password" name="password" v-model="password">
-            </label>
-            <button type="submit">login</button>
-        </form>
-    </b-container>
+    <div>
+        <b-form @submit.prevent="signIn">
+            <b-form-group label="Email" class="text-left">
+                <b-form-input
+                        v-model="email"
+                        name="email"
+                        type="text"
+                        placeholder="Email"
+                >
+                </b-form-input>
+            </b-form-group>
+            <b-form-group label="Password" class="text-left">
+                <b-form-input
+                        v-model="password"
+                        name="password"
+                        type="password"
+                        placeholder="Password"
+                >
+                </b-form-input>
+            </b-form-group>
+
+        </b-form>
+        <b-button type="submit" class="bg-success">Submit</b-button>
+    </div>
 </template>
 
 <script>

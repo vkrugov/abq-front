@@ -1,35 +1,40 @@
 <template>
-    <div class="products">
-        <div v-if="status !== ''">
-            <transition name="fade">
-                <div class="row" v-if="status === 'success'" key='product'>
-                    <div class="col-md-3" v-for="product in products" :key="product">
-                        <div class="product-box">
-                            <div class="mt-2" :class="(product.img ? 'image' : 'dark-image')">{{ product.img }}</div>
-                            <div class="mt-2 title">{{ product.name }}</div>
-                            <div class="row">
-                                <div class="col-md 9">
-                                    <div class="mt-2 desc">{{ product.desc }}</div>
-                                    <div class="mt-2 mb-2 price">{{ (product.cost).toFixed(2) }} ₴</div>
+    <div>
+        <router-view></router-view>
+        <div class="products">
+            <router-link v-show="isAdmin" to="new-product">Add New Product</router-link>
+            <div v-if="status !== ''">
+                <transition name="fade">
+                    <div class="row" v-if="status === 'success'" key='product'>
+                        <div class="col-md-3" v-for="product in products" :key="product">
+                            <div class="product-box">
+                                <div class="mt-2" :class="(product.img ? 'image' : 'dark-image')">{{ product.img }}
                                 </div>
-                                <div class="col-md-3">
-                                    <a class="btn btn-success add-to-cart" @click="addToCart($event, product.id)">
-                                        <b-icon icon="archive"></b-icon>
-                                    </a>
+                                <div class="mt-2 title">{{ product.name }}</div>
+                                <div class="row">
+                                    <div class="col-md 9">
+                                        <div class="mt-2 desc">{{ product.desc }}</div>
+                                        <div class="mt-2 mb-2 price">{{ (product.cost).toFixed(2) }} ₴</div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <a class="btn btn-success add-to-cart" @click="addToCart($event, product.id)">
+                                            <b-icon icon="archive"></b-icon>
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="row" v-else key='skeleton'>
-                    <app-skeleton-product class="col-md-3" v-for="c in 4" :key="c"></app-skeleton-product>
-                </div>
-            </transition>
-        </div>
-        <div v-else>
-            <h1>
-                Sorry, but we don't have any products now
-            </h1>
+                    <div class="row" v-else key='skeleton'>
+                        <app-skeleton-product class="col-md-3" v-for="c in 4" :key="c"></app-skeleton-product>
+                    </div>
+                </transition>
+            </div>
+            <div v-else>
+                <h1>
+                    Sorry, but we don't have any products now
+                </h1>
+            </div>
         </div>
     </div>
 </template>
@@ -38,27 +43,26 @@
     import {mapState} from 'vuex';
     import SkeletonProduct from '../components/SkeletonProduct'
     import {ADD_TO_CART, GET_PRODUCTS} from "../store/actions/product.actions";
-    //import api from "../config";
 
     export default {
         name: "Products",
         data() {
-            return {
-            }
+            return {}
         },
         components: {
             appSkeletonProduct: SkeletonProduct
         },
         computed: mapState({
             products: (state) => state.product.products,
-            status: (state) => state.product.status
+            status: (state) => state.product.status,
+            isAdmin: (state) => state.auth.user.role === 1,
         }),
         methods: {
             getProducts() {
-                 this.$store.dispatch(GET_PRODUCTS);
+                this.$store.dispatch(GET_PRODUCTS);
             },
-           addToCart(event, productId) {
-               this.$store.dispatch(ADD_TO_CART, productId);
+            addToCart(event, productId) {
+                this.$store.dispatch(ADD_TO_CART, productId);
             }
         },
         created() {

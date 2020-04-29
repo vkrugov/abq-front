@@ -10,6 +10,9 @@ import Register from "./pages/auth/Register";
 Vue.use(VueRouter);
 
 import {USER_LOAD} from "./store/actions/auth.actions";
+import NewProduct from "./pages/NewProduct";
+
+
 
 const router =  new VueRouter ({
     routes: [
@@ -21,7 +24,14 @@ const router =  new VueRouter ({
         {
             path: '/products',
             component: Products,
-            name: 'products'
+            name: 'products',
+            children: [
+                {
+                    path: '/new-product',
+                    component: NewProduct,
+                    name: 'newProduct',
+                }
+            ]
         },
         {
             path: '/cart',

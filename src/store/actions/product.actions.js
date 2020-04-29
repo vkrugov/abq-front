@@ -5,3 +5,5 @@ export const ADD_TO_CART = 'ADD_TO_CART';
 export const ADD_TO_CART_SUCCESS = 'ADD_TO_CART_SUCCESS';
 export const GET_CART= 'GET_CART';
 export const GET_CART_PRODUCTS_SUCCESS= 'GET_CART_PRODUCTS_SUCCESS';
+export const CLEAR_CART= 'CLEAR_CART';
+export const CART_LOGIN= 'CART_LOGIN';

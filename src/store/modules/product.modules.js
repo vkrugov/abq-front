@@ -5,6 +5,8 @@ import {
     ADD_TO_CART,
     ADD_TO_CART_SUCCESS,
     GET_CART,
+    CLEAR_CART,
+    CART_LOGIN,
     GET_CART_PRODUCTS_SUCCESS
 } from "../actions/product.actions";
 import api from "../../config";
@@ -82,7 +84,14 @@ const mutations = {
     },
     [GET_CART_PRODUCTS_SUCCESS]: (state, data) => {
         state.cartProducts = data
-    }
+    },
+    [CLEAR_CART]: (state) => {
+        state.cart = []
+    },
+    [CART_LOGIN]: (state, data) => {
+        state.cart = data;
+        localStorage.setItem('cart', JSON.stringify(data));
+    },
 };
 
 export default {

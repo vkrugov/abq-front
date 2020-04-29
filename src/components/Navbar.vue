@@ -45,7 +45,7 @@
                         this.$router.push("/");
                     });
             }
-        }
+        },
     }
 </script>
 
